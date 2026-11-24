@@ -12,12 +12,11 @@ class GraphState(TypedDict):
     output: str
 
 tool_agent = build_tool_agent()
-rag_agent = build_rag_agent()
 
 def router(state: GraphState) -> str:
     """路由判断：判断用户问题交给哪个Agent
-    包含文件、文档、资料、检索 -> rag_agent
-    时间、天气、计算 -> tool_agent
+    包含文件、文档、资料、检索 -> rag_agent_node
+    时间、天气、温度、计算 -> tool_agent_node
     """
     user_input = state["input"].lower()
     rag_keywords = ["文档", "文件", "pdf", "docx", "资料", "检索", "里面内容"]
@@ -27,7 +26,7 @@ def router(state: GraphState) -> str:
     elif any(k in user_input for k in tool_keywords):
         return "tool_agent_node"
     else:
-        # 默认路由工具agent，你可按需调整
+        # 默认路由工具agent
         return "tool_agent_node"
 
 def tool_agent_node(state: GraphState) -> GraphState:
@@ -39,6 +38,7 @@ def tool_agent_node(state: GraphState) -> GraphState:
     return state
 
 def rag_agent_node(state: GraphState) -> GraphState:
+    rag_agent = build_rag_agent()
     res = rag_agent.invoke({
         "question": state["input"],
         "chat_history": state["chat_history"]

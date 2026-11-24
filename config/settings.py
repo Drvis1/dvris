@@ -9,8 +9,7 @@ class Settings(BaseSettings):
     EMBEDDING_MODEL: str
     BASE_URL: str
 
-    MILVUS_HOST: str
-    MILVUS_PORT: int
+    MILVUS_LITE_URI: str
     MILVUS_COLLECTION: str
 
     MEMORY_DB_PATH: str
@@ -20,3 +19,5 @@ class Settings(BaseSettings):
 settings = Settings()
 # 创建memory文件夹
 os.makedirs(os.path.dirname(settings.MEMORY_DB_PATH), exist_ok=True)
+# Milvus Lite 所在目录自动创建
+os.makedirs(os.path.dirname(settings.MILVUS_LITE_URI), exist_ok=True)

@@ -1,5 +1,5 @@
+from langchain_community.vectorstores.milvus import Milvus
 from pymilvus import connections, utility, Collection, FieldSchema, DataType
-from langchain_community.vectorstores import Milvus
 from langchain_community.embeddings import DashScopeEmbeddings
 from config.settings import settings
 

@@ -8,5 +8,9 @@ python-dotenv>=1.0.1
 PyPDF2>=3.0.1
 python-docx>=1.1.2
 markdown>=3.7
-sqlite3
 pydantic>=2.8.0
+langchain-core
+pydantic-settings
+requests
+pytz
+langchain-classic

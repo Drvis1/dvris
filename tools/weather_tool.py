@@ -13,7 +13,7 @@ def get_weather(city: str) -> str:
     try:
         #获取和风天气的密钥
         headers={
-            "hefeng_api_key":hefeng_api_key
+            "X-QW-Api-Key":hefeng_api_key
         }
         #获取用户所查询城市的具体经纬度
         geoapi_url=f"https://k92k5r522w.re.qweatherapi.com/geo/v2/city/lookup?location={city}"

@@ -1,200 +1,237 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="zh-CN">
 <head>
-    <meta charset="UTF-8">
-    <title>Dvris智能系统</title>
+    <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Dvris 智能助手</title>
     <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: "Microsoft Yahei", sans-serif;
+        *{box-sizing:border-box}
+        body{
+            margin:0;
+            background:#f1f5f9;
+            color:#172033;
+            font:16px system-ui,sans-serif
         }
-        body {
-            background-color: #f4f6f8;
-            padding: 20px;
+        main{
+            max-width:900px;
+            margin:30px auto;
+            padding:20px
         }
-        .container {
-            max-width: 1000px;
-            margin: 0 auto;
-            background: #fff;
-            border-radius: 12px;
-            box-shadow: 0 2px 12px rgba(0,0,0,0.08);
-            overflow: hidden;
+        header{
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+            gap:15px
         }
-        .header {
-            background: #2563eb;
-            color: white;
-            padding:16px 24px;
-            font-size:20px;
-            font-weight:bold;
-        }
-        .chat-area {
-            height: 550px;
-            padding:20px;
-            overflow-y: auto;
-            border-bottom: 1px solid #eee;
-        }
-        .msg {
-            margin-bottom:16px;
-        }
-        .user-msg {
-            text-align:right;
-        }
-        .user-msg .content {
+        h1{margin:0}
+        p{color:#64748b}
+        button{
+            cursor:pointer;
             background:#2563eb;
             color:white;
-            display:inline-block;
-            padding:10px 14px;
-            border-radius:10px 10px 2px 10px;
-            max-width:70%;
-            white-space:pre-wrap;
+            border:0;
+            border-radius:9px;
+            padding:12px 18px;
+            font:inherit
         }
-        .bot-msg .content {
-            background:#eef2ff;
-            color:#111;
-            display:inline-block;
-            padding:10px 14px;
-            border-radius:10px 10px 10px 2px;
-            max-width:70%;
-            white-space:pre-wrap;
-        }
-        .control-bar{
-            padding:16px 20px;
-        }
-        .row{
-            display:flex;
-            gap:10px;
-            margin-bottom:12px;
-            align-items:center;
-        }
-        input[type="text"]{
-            flex:1;
-            padding:10px;
-            border:1px solid #d1d5db;
-            border-radius:6px;
-            font-size:14px;
-        }
+        button:disabled{
+            opacity:.5;
+            cursor:wait
+        }.secondary{
+                     background:#e2e8f0;
+                     color:#334155}
+        #messages{
+            height:52vh;
+            overflow:auto;
+            background:white;
+            border:1px solid #e2e8f0;
+            border-radius:14px;
+            padding:20px;
+            margin:20px 0}.message{   white-space:pre-wrap;
+                                      overflow-wrap:anywhere;
+                                      line-height:1.7;
+                                      background:#f1f5f9;
+                                      padding:12px 16px;
+                                      border-radius:12px;
+                                      margin:12px 0;
+                                      margin-right:12%
+                                  }.user{background:#dbeafe;margin-right:0;margin-left:12%
+                                                                     }.role{font-size:12px;color:#64748b;margin-bottom:4px}
+        form{display:flex;gap:10px}
         textarea{
             flex:1;
-            padding:10px;
-            border:1px solid #d1d5db;
-            border-radius:6px;
-            font-size:14px;
-            height:80px;
-        }
-        button{
-            padding:10px 18px;
-            border:none;
-            border-radius:6px;
-            cursor:pointer;
-            font-size:14px;
-        }
-        .btn-send{
-            background:#2563eb;
-            color:white;
-        }
-        .btn-upload{
-            background:#10b981;
-            color:white;
-        }
-        .loading{
-            color:#888;
-        }
+            resize:vertical;
+            border:1px solid #cbd5e1;
+            border-radius:10px;
+            padding:12px;
+            font:inherit;
+            min-width:0
+        }.upload{
+                     display:flex;
+                     align-items:center;
+                     flex-wrap:wrap;gap:10px;margin-top:20px
+                 }
+        #status{min-height:24px;color:#475569}
+        a{color:#2563eb}
+        @media(max-width:600px){
+            main{margin:0;padding:16px}
+            h1{font-size:24px}
+            header{align-items:flex-start
+            }.message{margin-right:0}.user{margin-left:8%}}
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="header">Dvris智能系统</div>
-        <div class="chat-area" id="chatBox"></div>
-        <div class="control-bar">
-            <div class="row">
-                <label>会话ID：</label>
-                <input id="sessionId" type="text" value="session_001">
-                <button class="btn-upload" onclick="document.getElementById('fileInput').click()">上传文档</button>
-                <input id="fileInput" type="file" style="display:none" accept=".pdf,.docx,.txt,.md">
-            </div>
-            <div class="row">
-                <textarea id="queryInput" placeholder="请输入问题，例如：现在几点？1+2*3等于多少？文档内容是什么？"></textarea>
-                <button class="btn-send" onclick="sendChat()">发送</button>
-            </div>
+<main>
+    <header>
+        <div>
+            <h1>Dvris 智能助手</h1>
+            <p>智能对话 · 工具查询 · 文档问答</p>
         </div>
+        <button id="clear" class="secondary">清空会话</button>
+    </header>
+    <div id="messages" role="log" aria-label="对话记录" aria-live="polite"></div>
+    <form id="chat">
+        <textarea id="input" aria-label="消息" placeholder="输入问题，例如：现在几点？或这份文档讲了什么？" maxlength="10000" rows="2" required></textarea>
+        <button id="send">发送</button>
+    </form>
+    <div class="upload">
+        <input type="file" id="file" accept=".pdf,.docx,.txt,.md" aria-label="选择知识库文档">
+        <button id="upload" class="secondary">上传到知识库</button>
+        <small>PDF / DOCX / TXT / MD，最多 20 MB</small>
     </div>
-
+    <p id="status" role="status"></p>
+    <a href="/docs" target="_blank" rel="noopener">API 文档</a>
+</main>
 <script>
-const chatBox = document.getElementById("chatBox");
-const sessionIdEl = document.getElementById("sessionId");
-const queryEl = document.getElementById("queryInput");
-const fileInput = document.getElementById("fileInput");
-
-// 渲染消息
-function appendMsg(text, isUser){
-    const div = document.createElement("div");
-    div.className = "msg " + (isUser?"user-msg":"bot-msg");
-    div.innerHTML = `<div class="content">${escapeHtml(text)}</div>`;
-    chatBox.appendChild(div);
-    chatBox.scrollTop = chatBox.scrollHeight;
-}
-function escapeHtml(str){
-    return String(str)
-    .replace(/&/g,"&amp;")
-    .replace(/</g,"&lt;")
-    .replace(/>/g,"&gt;")
-    .replace(/"/g,"&quot;");
-}
-
-// 对话请求
-async function sendChat(){
-    const sid = sessionIdEl.value.trim();
-    const q = queryEl.value.trim();
-    if(!sid || !q) return;
-    appendMsg(q, true);
-    queryEl.value = "";
-    appendMsg("思考中...", false);
-    try{
-        const form = new FormData();
-        form.append("session_id", sid);
-        form.append("query", q);
-        const res = await fetch("/chat", {method:"POST", body:form});
-        const json = await res.json();
-        // 删除loading提示
-        chatBox.removeChild(chatBox.lastChild);
-        if(json.code===0){
-            appendMsg(json.data.answer, false);
-        }else{
-            appendMsg(json.msg, false);
+    const $=id=>document.getElementById(id);
+    let sid=localStorage.getItem('dvris-session');
+    if(!sid||!/^[a-zA-Z0-9_-]{1,128}$/.test(sid)){sid=crypto.randomUUID();
+        localStorage.setItem('dvris-session',sid)}
+    let busy=false;
+    function setBusy(value){
+        busy=value;
+        for(const id of ['send','clear','upload','file'])$(id).disabled=value
+    }
+    function message(role,content){
+        const box=document.createElement('div');
+        box.className='message '+(role==='user'?'user':'');
+        const label=document.createElement('div');
+        label.className='role';
+        label.textContent=role==='user'?'你':'Dvris';
+        const text=document.createElement('div');
+        text.textContent=typeof content==='string'?content:JSON.stringify(content);
+        box.append(label,text);$('messages').append(box);
+        $('messages').scrollTop=$('messages').scrollHeight
+    }
+    async function request(url,options){
+        const response=await fetch(url,options);
+        let data;
+        try{
+            data=await response.json()
         }
-    }catch(err){
-        chatBox.removeChild(chatBox.lastChild);
-        appendMsg("网络异常", false);
+        catch{
+            throw Error('服务器返回了无效响应。')
+        }
+        if(!response.ok)
+            throw Error(typeof data.detail==='string'?data.detail:'请求失败，请检查输入或服务日志。');
+        return data
     }
-}
-
-// 文件上传事件
-fileInput.onchange = async function(){
-    const file = this.files[0];
-    if(!file) return;
-    const sid = sessionIdEl.value.trim();
-    const form = new FormData();
-    form.append("session_id", sid);
-    form.append("file", file);
-    appendMsg(`[上传文件] ${file.name}`, true);
-    appendMsg("文件解析入库中...", false);
-    try{
-        const res = await fetch("/upload", {method:"POST", body:form});
-        const json = await res.json();
-        chatBox.removeChild(chatBox.lastChild);
-        appendMsg(json.msg, false);
-    }catch(err){
-        chatBox.removeChild(chatBox.lastChild);
-        appendMsg("文件上传失败", false);
+    async function load(){
+        setBusy(true);
+        try{
+            const data=await request('/api/sessions/'+sid+'/messages');
+            $('messages').replaceChildren();
+            data.messages.forEach(m=>message(m.role,m.content))
+        }
+        catch(e){
+            $('status').textContent=e.message
+        }
+        finally{
+            setBusy(false)
+        }
     }
-}
-
-// 回车发送
-queryEl.addEventListener("keydown", function(e){
-    if(e.ctrlKey && e.key === "Enter") sendChat();
-})
+    $('chat').addEventListener(
+        'submit',
+        async e=>{
+            e.preventDefault();
+            if(busy)return;const text=$('input').value.trim();
+            if(!text)return;setBusy(true);
+            $('status').textContent='正在思考…';
+            try{
+                const data=await request(
+                    '/api/chat',
+                    {
+                        method:'POST',
+                        headers:{'Content-Type':'application/json'},
+                        body:JSON.stringify({session_id:sid,message:text})
+                    });
+                message('user',text);
+                message('assistant',data.answer);
+                $('input').value='';
+                $('status').textContent=''
+            }
+            catch(e){
+                $('status').textContent=e.message
+            }
+            finally{
+                setBusy(false);
+                $('input').focus()
+            }
+        });
+    $('input').addEventListener(
+        'keydown',
+        e=>{
+            if(e.key==='Enter'&&!e.shiftKey&&!e.isComposing){
+                e.preventDefault();
+                $('chat').requestSubmit()
+            }
+        });
+    $('clear').onclick=async()=>{
+        if(busy||!confirm('确定清空当前会话记录？'))
+            return;
+        setBusy(true);
+            try{
+                await request(
+                    '/api/sessions/'+sid+'/messages', {method:'DELETE'});
+                $('messages').replaceChildren();
+                $('status').textContent='会话已清空'
+            }
+            catch(e){
+                $('status').textContent=e.message
+            }
+            finally{
+                setBusy(false)
+            }
+    };
+    $('upload').onclick=async()=>{
+        const file=$('file').files[0];
+        if(busy)
+            return;
+        if(!file){
+            $('status').textContent='请先选择文件。';
+            return
+        }
+        if(file.size>20*1024*1024){
+            $('status').textContent='文件不能超过 20 MB。';
+            return
+        }
+        const body=new FormData();
+        body.append('file',file);
+        setBusy(true);
+        $('status').textContent='正在导入文档…';
+        try{
+            const data=await request(
+                '/api/upload',{method:'POST',body});
+            $('status').textContent=data.message;
+            $('file').value=''
+        }
+        catch(e){
+            $('status').textContent=e.message
+        }
+        finally{
+            setBusy(false)
+        }
+    };
+    load();
 </script>
 </body>
 </html>

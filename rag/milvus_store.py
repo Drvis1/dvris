@@ -1,4 +1,4 @@
-from langchain_community.vectorstores.milvus import Milvus
+from langchain_milvus import Milvus
 from pymilvus import MilvusClient
 from langchain_community.embeddings import DashScopeEmbeddings
 from config.settings import settings

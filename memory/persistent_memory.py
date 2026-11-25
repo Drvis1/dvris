@@ -1,6 +1,6 @@
 import sqlite3
 import json
-from typing import List, Dict
+from typing import List
 from langchain_core.messages import BaseMessage, messages_from_dict, messages_to_dict
 from config.settings import settings
 

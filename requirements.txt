@@ -21,3 +21,4 @@ fastapi>=0.110.0
 uvicorn>=0.29.0
 python-multipart>=0.0.18
 milvus_lite
+docx2txt

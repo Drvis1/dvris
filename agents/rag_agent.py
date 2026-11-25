@@ -1,6 +1,6 @@
 from langchain_openai import ChatOpenAI
 from langchain_core.prompts import ChatPromptTemplate
-from langchain_core.runnables import RunnablePassthrough
+from operator import itemgetter
 from langchain_core.output_parsers import StrOutputParser
 from rag.retriever import get_rag_retriever
 from config.settings import settings
@@ -19,9 +19,9 @@ def build_rag_agent():
         ("human", "{question}"),
     ])
     rag_chain = (
-        {"context": retriever | (lambda docs: "\n".join([d.page_content for d in docs])),
-         "question": RunnablePassthrough(),
-         "chat_history": RunnablePassthrough()}
+        {"context": itemgetter("question") | retriever | (lambda docs: "\n".join([d.page_content for d in docs])),
+         "question": itemgetter("question"),
+         "chat_history": itemgetter("chat_history")}
         | prompt
         | llm
         | StrOutputParser()

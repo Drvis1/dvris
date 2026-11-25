@@ -5,6 +5,7 @@ langchain-community>=0.3.0
 langchain-core
 langchain-classic
 langchain-milvus
+langchain-text-splitters
 pymilvus>=2.5.0
 dashscope>=1.14.0
 python-dotenv>=1.0.1

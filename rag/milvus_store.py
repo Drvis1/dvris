@@ -19,7 +19,6 @@ def get_milvus_vector_store():
     vector_db = Milvus(
         embeddings,
         collection_name=settings.MILVUS_COLLECTION,
-        # Milvus Lite 只需要uri参数
         connection_args={
             "uri": settings.MILVUS_LITE_URI
         },

@@ -35,19 +35,3 @@ def upload_file_to_kb(file_path: str):
         return "文件已成功解析并存入向量数据库，可以提问文档内容"
     except Exception:
         return "抱歉，我无法回答当前问题"
-
-if __name__ == "__main__":
-    print("==== Dvris智能系统 ====")
-    sid = "session_001"
-    while True:
-        user_input = input("\n请输入指令（输入upload:xxx 上传文件；exit退出）：")
-        if user_input == "exit":
-            print("系统退出，对话记录已保存")
-            break
-        if user_input.startswith("upload:"):
-            fp = user_input.replace("upload:", "").strip()
-            msg = upload_file_to_kb(fp)
-            print(f"系统：{msg}")
-        else:
-            ans = run_dvris(sid, user_input)
-            print(f"系统：{ans}")

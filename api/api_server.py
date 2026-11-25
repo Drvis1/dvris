@@ -12,7 +12,7 @@ from starlette.concurrency import run_in_threadpool
 ROOT = Path(__file__).resolve().parents[1]
 app = FastAPI(title="Dvris API", version="1.0.0")
 app.mount("/static", StaticFiles(directory=ROOT / "static"), name="static")
-lock = RLock()  # The existing memory store shares one SQLite connection.
+lock = RLock()
 logger = logging.getLogger(__name__)
 MAX_UPLOAD = 20 * 1024 * 1024
 
